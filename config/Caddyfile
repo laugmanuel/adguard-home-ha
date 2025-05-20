@@ -1,0 +1,8 @@
+{
+  auto_https off
+}
+:2015 {
+  file_server {
+    root /opt/adguardhome/conf/
+  }
+}

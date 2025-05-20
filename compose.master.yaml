@@ -1,0 +1,17 @@
+services:
+  adguard-keepalived:
+    image: ghcr.io/laugmanuel/adguard-home-ha:main
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    network_mode: host
+    volumes:
+      - ./data/config:/opt/adguardhome/conf
+      - ./data/work:/opt/adguardhome/work
+    environment:
+      TZ: Europe/Berlin
+      KEEPALIVED_ENABLED: true
+      KEEPALIVED_STATE: MASTER
+      KEEPALIVED_VIP: "192.168.0.2"
+      ADGUARD_CONFIG_SYNC_ENABLED: true
+      ADGUARD_CONFIG_SYNC_ROLE: PRIMARY
