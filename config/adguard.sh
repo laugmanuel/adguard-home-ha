@@ -3,8 +3,10 @@
 ADGUARD_HOME_CONFIG_DIR="/opt/adguardhome/conf"
 
 function start_adguard() {
+  [ "${DEBUG}" == "true" ] && ADGUARD_PARAMS="-v" || ADGUARD_PARAMS=""
+
   # call the upstream entrypoint (https://github.com/AdguardTeam/AdGuardHome/blob/master/docker/Dockerfile)
-  /opt/adguardhome/AdGuardHome \
+  /opt/adguardhome/AdGuardHome $ADGUARD_PARAMS\
     --no-check-update \
     -c /opt/adguardhome/conf/AdGuardHome.yaml \
     -w /opt/adguardhome/work

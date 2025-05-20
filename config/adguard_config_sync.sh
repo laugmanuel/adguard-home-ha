@@ -5,7 +5,8 @@ ADGUARD_HOME_CONFIG_DIR="/opt/adguardhome/conf"
 while [ true ]; do
   echo "[$(date)] AdGuardConfigSync: Syncing config from PRIMARY: ${ADGUARD_CONFIG_SYNC_PRIMARY_URL}"
 
-  SYNC_RESULT=$(curl --fail-with-body -o "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.temp" ${ADGUARD_CONFIG_SYNC_PRIMARY_URL} 2>&1)
+  [ "${DEBUG}" == "true" ] && CURL_PARAMS="-vv" || CURL_PARAMS=""
+  SYNC_RESULT=$(curl $CURL_PARAMS --fail-with-body -o "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.temp" ${ADGUARD_CONFIG_SYNC_PRIMARY_URL} 2>&1)
 
   if [ "$?" -ne 0 ]; then
     echo "$SYNC_RESULT"

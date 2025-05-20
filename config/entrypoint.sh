@@ -44,7 +44,10 @@ if [ "$ADGUARD_CONFIG_SYNC_ENABLED" == "true" ]; then
 
   if [ "$ADGUARD_CONFIG_SYNC_ROLE" == "PRIMARY" ]; then
     echo "[$(date)] Starting AdGuardHome config sync PRIMARY..."
-    caddy run --config /etc/caddy/Caddyfile &
+
+    # the environment variable is evaluated in Caddyfile
+    [ "${DEBUG}" == "true" ] && export CADDY_DEBUG="debug"
+    caddy run --config /etc/caddy/Caddyfile $CADDY_PARAMS &
   else
     if [ -z "$ADGUARD_CONFIG_SYNC_PRIMARY_URL" ]; then
       bail "[$(date)] ADGUARD_CONFIG_SYNC_PRIMARY_URL must be configured if running in FOLLOWER mode"

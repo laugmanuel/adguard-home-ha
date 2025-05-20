@@ -1,5 +1,6 @@
 {
   auto_https off
+  {$CADDY_DEBUG}
 }
 :2015 {
   file_server {
