@@ -6,9 +6,6 @@ This image contains three parts to support a HA AdGuard setup:
 - **Keepalived** to support a floating VIP address
 - **Caddy** to serve the current AdGuard configuration to other instances
 
-## Prerequisites
-
-
 ## Config options
 
 | environment variable              | description                                                                                                        | default      | required                                        |
@@ -87,4 +84,28 @@ or when using plain docker:
 # docker
 docker network create --driver ipvlan -o parent=eth0 -o ipvlan_mode=l2 --subnet 192.168.0.0/24 --gateway 192.168.0.1 --ip-range 192.168.0.160/32 adguard
 docker run -dt [...] --network=adguard ghcr.io/laugmanuel/adguard-home-ha:main
+```
+
+## Failover & Autohealing
+
+There is a DNS resultion check script which is invoced by keepalived and also the container runtime itself.
+
+If the script fails, keepalived will release the VIP for a follower to pick it up. Also, the container will become unhealthy after the defined amount of failed requests.
+
+If you want to enable autohealing (e.g. restarting the container if it becomes unhealthy), you can use <https://hub.docker.com/r/willfarrell/autoheal/> like so:
+
+```yaml
+services:
+  adguard:
+    [...]
+    labels:
+      autoheal: true
+
+  autoheal:
+    restart: unless-stopped
+    image: willfarrell/autoheal:latest
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 ```
