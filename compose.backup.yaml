@@ -2,9 +2,14 @@ services:
   adguard-keepalived:
     image: ghcr.io/laugmanuel/adguard-home-ha:main
     restart: unless-stopped
-    cap_add:
-      - NET_ADMIN
-    network_mode: host
+    ######## for host networking mode:
+    # cap_add:
+    #   - NET_ADMIN
+    # network_mode: host
+    ######## for IPVlan networking mode:
+    networks:
+      - adguard
+    ########
     volumes:
       - ./data/config:/opt/adguardhome/conf
       - ./data/work:/opt/adguardhome/work
@@ -16,3 +21,16 @@ services:
       ADGUARD_CONFIG_SYNC_ENABLED: true
       ADGUARD_CONFIG_SYNC_ROLE: FOLLOWER
       ADGUARD_CONFIG_SYNC_PRIMARY_URL: "http://192.168.0.3:2015/AdGuardHome.yaml" # this is the IP of the master instance
+
+######## for IPVlan networking mode
+networks:
+  adguard:
+    driver: ipvlan
+    driver_opts:
+      parent: eth0 # host interface
+      ipvlan_mode: l2 # layer2 mode
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24 # your local subnet present on the interface
+          gateway: 192.168.0.1 # the gateway of the network
+          ip_range: 192.168.0.160/32 # IP of this container (can also be a range). Make sure it does not collide with any DHCP range!

@@ -8,10 +8,6 @@ This image contains three parts to support a HA AdGuard setup:
 
 ## Prerequisites
 
-For this container to work, we need a few specific configurations:
-
-- `net.ipv4.ip_nonlocal_bind=1` needs to be set on the container host
-- `--cap-add NET_ADMIN` and `--net=host` needs to be set on the container itself
 
 ## Config options
 
@@ -30,3 +26,65 @@ For this container to work, we need a few specific configurations:
 | `KEEPALIVED_ROUTER_ID`            | common VRRP router ID to group remote instances                                                                    | 53           | no                                              |
 | `KEEPALIVED_STATE`                | desired state for this keepalived instance. Valid values are `MASTER` or `BACKUP`                                  | BACKUP       | no                                              |
 | `KEEPALIVED_VIP`                  | VIP to bind if keepalived determines this instance as MASTER                                                       | ""           | only if `KEEPALIVED_ENABLED` is `true`          |
+
+## Networking modes
+
+### Host networking
+
+You can just use host networking and let the container bind the VIP to the hosts interface. For that to work, you need to enable `net.ipv4.ip_nonlocal_bind=1` on the host.
+
+**Warning**: You might run into port collisions if the host itself also listens on some ports AdGuard wants to use..
+
+For this mode you configure the docker container like this:
+
+```yaml
+# docker compose
+services:
+  adguard:
+    [...]
+    cap_add:
+      - NET_ADMIN
+    network_mode: host
+    [...]
+```
+
+or when using plain docker:
+
+```sh
+# docker run
+docker run -dt [...] --network=host --cap-add NET_ADMIN ghcr.io/laugmanuel/adguard-home-ha:main
+```
+
+### IPVlan mode
+
+This mode creates a Layer2 bridge on the given host interface and attaches it to the container. Therefore the container gets it's sperate IPv4/IPv6 on the given VLAN.
+
+```yaml
+# docker compose
+services:
+  adguard:
+    [...]
+    networks:
+      - adguard
+    [...]
+
+networks:
+  adguard:
+    driver: ipvlan
+    driver_opts:
+      parent: eth0 # host interface
+      ipvlan_mode: l2 # layer2 mode
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24 # your local subnet present on the interface
+          gateway: 192.168.0.1 # the gateway of the network
+          ip_range: 192.168.0.160/32 # IP of this container (can also be a range). Make sure it does not collide with any DHCP range!
+```
+
+or when using plain docker:
+
+```sh
+# docker
+docker network create --driver ipvlan -o parent=eth0 -o ipvlan_mode=l2 --subnet 192.168.0.0/24 --gateway 192.168.0.1 --ip-range 192.168.0.160/32 adguard
+docker run -dt [...] --network=adguard ghcr.io/laugmanuel/adguard-home-ha:main
+```
