@@ -52,9 +52,11 @@ or when using plain docker:
 docker run -dt [...] --network=host --cap-add NET_ADMIN ghcr.io/laugmanuel/adguard-home-ha:main
 ```
 
-### IPVlan mode
+### MACvlan mode
 
-This mode creates a Layer2 bridge on the given host interface and attaches it to the container. Therefore the container gets it's sperate IPv4/IPv6 on the given VLAN.
+This mode uses `macvlan` on the given host interface to support native communication to the container. Therefore the container gets it's sperate IPv4/IPv6 out of the given range.
+
+**NOTE: In this mode, the communication between the host and container is not possible! A workaround can be found here: <https://dockerlabs.collabnix.com/beginners/macvlan-010.html>**
 
 ```yaml
 # docker compose
@@ -69,10 +71,9 @@ services:
 
 networks:
   adguard:
-    driver: ipvlan
+    driver: macvlan
     driver_opts:
       parent: eth0 # host interface
-      ipvlan_mode: l2 # layer2 mode
     ipam:
       config:
         - subnet: 192.168.0.0/24 # your local subnet present on the interface

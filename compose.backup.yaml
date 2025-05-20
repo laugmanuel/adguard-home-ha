@@ -42,13 +42,12 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-## For IPVlan networking mode ##
+## For MACvlan networking mode ##
 networks:
   adguard:
-    driver: ipvlan
+    driver: macvlan
     driver_opts:
       parent: eth0 # host interface
-      ipvlan_mode: l2 # layer2 mode
     ipam:
       config:
         - subnet: 192.168.0.0/24 # your local subnet present on the interface
