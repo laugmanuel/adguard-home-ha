@@ -12,6 +12,8 @@ function start_adguard() {
     -w /opt/adguardhome/work
 }
 
+start_adguard &
+
 while [ true ]; do
   if [ -f "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.sync" ]; then
     echo "[$(date)] AdGuard: new synced config detected, restarting AdGuardHome..."
