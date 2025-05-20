@@ -3,10 +3,10 @@ services:
     container_name: adguard
     image: ghcr.io/laugmanuel/adguard-home-ha:main
     restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
 
     ### For host networking mode ###
-    # cap_add:
-    #   - NET_ADMIN
     # network_mode: host
 
     ### for IPVlan networking mode ###

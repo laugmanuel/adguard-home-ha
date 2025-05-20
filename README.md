@@ -61,6 +61,8 @@ This mode creates a Layer2 bridge on the given host interface and attaches it to
 services:
   adguard:
     [...]
+    cap_add:
+      - NET_ADMIN
     networks:
       - adguard
     [...]
@@ -83,7 +85,7 @@ or when using plain docker:
 ```sh
 # docker
 docker network create --driver ipvlan -o parent=eth0 -o ipvlan_mode=l2 --subnet 192.168.0.0/24 --gateway 192.168.0.1 --ip-range 192.168.0.160/32 adguard
-docker run -dt [...] --network=adguard ghcr.io/laugmanuel/adguard-home-ha:main
+docker run -dt [...] --cap-add NET_ADMIN --network=adguard ghcr.io/laugmanuel/adguard-home-ha:main
 ```
 
 ## Failover & Autohealing
