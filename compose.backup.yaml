@@ -7,11 +7,11 @@ services:
       - NET_ADMIN
 
     ### For host networking mode ###
-    # network_mode: host
+    network_mode: host
 
     ### for IPVlan networking mode ###
-    networks:
-      - adguard
+    # networks:
+    #   - adguard
 
     volumes:
       - ./data/config:/opt/adguardhome/conf
@@ -43,13 +43,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
 ## For MACvlan networking mode ##
-networks:
-  adguard:
-    driver: macvlan
-    driver_opts:
-      parent: eth0 # host interface
-    ipam:
-      config:
-        - subnet: 192.168.0.0/24 # your local subnet present on the interface
-          gateway: 192.168.0.1 # the gateway of the network
-          ip_range: 192.168.0.160/32 # IP of this container (can also be a range). Make sure it does not collide with any DHCP range!
+# networks:
+#   adguard:
+#     driver: macvlan
+#     driver_opts:
+#       parent: eth0 # host interface
+#     ipam:
+#       config:
+#         - subnet: 192.168.0.0/24 # your local subnet present on the interface
+#           gateway: 192.168.0.1 # the gateway of the network
+#           ip_range: 192.168.0.160/32 # IP of this container (can also be a range). Make sure it does not collide with any DHCP range!
