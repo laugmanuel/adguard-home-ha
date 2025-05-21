@@ -11,7 +11,8 @@ services:
 
     ### for IPVlan networking mode ###
     # networks:
-    #   - adguard
+    #   macvlan:
+    #     ipv4_address: 192.168.0.4
 
     volumes:
       - ./data/config:/opt/adguardhome/conf
@@ -44,12 +45,5 @@ services:
 
 ## For MACvlan networking mode ##
 # networks:
-#   adguard:
-#     driver: macvlan
-#     driver_opts:
-#       parent: eth0 # host interface
-#     ipam:
-#       config:
-#         - subnet: 192.168.0.0/24 # your local subnet present on the interface
-#           gateway: 192.168.0.1 # the gateway of the network
-#           ip_range: 192.168.0.160/32 # IP of this container (can also be a range). Make sure it does not collide with any DHCP range!
+#   macvlan:
+#     external: true
