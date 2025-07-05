@@ -1,0 +1,7 @@
+services:
+  adguard:
+    extends:
+      file: compose.master.yaml
+      service: adguard
+
+    build: ./

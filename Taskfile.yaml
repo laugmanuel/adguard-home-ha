@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list-all
+
+  up:
+    vars:
+      COMPOSE_FILE: '{{ default "compose.yaml" .COMPOSE_FILE }}'
+    cmds:
+      - docker compose -f {{ .COMPOSE_FILE }} {{ .CLI_ARGS }}
+
+  master:
+    cmds:
+      - task: up
+        vars: { COMPOSE_FILE: 'compose.master.yaml' }
+
+  backup:
+    cmds:
+      - task: up
+        vars: { COMPOSE_FILE: 'compose.backup.yaml' }
+
+  dev:
+    cmds:
+      - task: up
+        vars: { COMPOSE_FILE: 'compose.dev.yaml' }

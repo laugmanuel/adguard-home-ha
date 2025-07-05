@@ -30,6 +30,9 @@ if [ "$KEEPALIVED_ENABLED" == "true" ]; then
 
   envsubst </etc/keepalived/keepalived.conf.template >/etc/keepalived/keepalived.conf
 
+  # make sure old pids are not present
+  rm -rf /var/run/keepalived
+
   /usr/sbin/keepalived --dont-fork --log-detail --log-console --use-file=/etc/keepalived/keepalived.conf &
 fi
 
