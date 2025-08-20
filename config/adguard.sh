@@ -18,7 +18,7 @@ while [ true ]; do
   if [ -f "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.sync" ]; then
     echo "[$(date)] AdGuard: new synced config detected, restarting AdGuardHome..."
 
-    diff -s "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.sync" "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml" 2>/dev/null
+    diff -s "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml" "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.sync" 2>/dev/null
 
     pkill AdGuardHome
     mv "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml.sync" "${ADGUARD_HOME_CONFIG_DIR}/AdGuardHome.yaml"
