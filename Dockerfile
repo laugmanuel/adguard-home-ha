@@ -1,5 +1,5 @@
 # renovate: datasource=docker depName=adguard/adguardhome versioning=docker
-ARG ADGUARD_HOME_VERSION=v0.107.80
+ARG ADGUARD_HOME_VERSION=v1.0.0
 FROM adguard/adguardhome:${ADGUARD_HOME_VERSION}
 
 RUN apk add keepalived envsubst caddy curl
